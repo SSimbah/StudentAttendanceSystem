@@ -10,5 +10,6 @@ namespace StudentAttendanceSystem.Data
         }
         public DbSet<Student> Students { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
+        public DbSet<ClassModel> ClassModels { get; set; }
     }
 }

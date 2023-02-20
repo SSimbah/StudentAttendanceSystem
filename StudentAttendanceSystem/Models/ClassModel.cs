@@ -9,10 +9,6 @@ namespace StudentAttendanceSystem.Models
         [ScaffoldColumn(false)]
         public int ClassID { get; set; }
 
-        [DisplayName("Class Name")]
-        [Required(ErrorMessage = "Please Enter Class Name")]
-        public string ClassName { get; set; }
-
         [DisplayName("Class Subject")]
         [Required(ErrorMessage = "Please Enter Class Subject")]
         public string ClassSubject { get; set; }
