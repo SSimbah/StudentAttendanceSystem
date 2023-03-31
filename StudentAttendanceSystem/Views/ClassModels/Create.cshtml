@@ -1,5 +1,4 @@
-﻿@model StudentAttendanceSystem.Models.ClassModel
-
+﻿@model StudentAttendanceSystem.ViewModels.ClassViewModel
 @{
     ViewData["Title"] = "Create";
 }
@@ -13,28 +12,31 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ClassSubject" class="control-label"></label>
-                <input asp-for="ClassSubject" class="form-control" />
-                <span asp-validation-for="ClassSubject" class="text-danger"></span>
+                <label asp-for="Class.ClassName" class="control-label"></label>
+                <input asp-for="Class.ClassName" class="form-control" />
+                <span asp-validation-for="Class.ClassName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ClassSchedule" class="control-label"></label>
-                <select asp-for="ClassSchedule" class="form-control" asp-items="ViewBag.ScheduleDay"></select>
-                <span asp-validation-for="ClassSchedule" class="text-danger"></span>
+                <label asp-for="Class.SubjectID" class="control-label"></label>
+                <select asp-for="Class.SubjectID" class="form-control" asp-items="@(new SelectList(Model.Subjects, "SubjectID", "SubjectNameExt" ))"></select>
             </div>
             <div class="form-group">
-                <label asp-for="InstructorID" class="control-label"></label>
-                <select asp-for="InstructorID" class ="form-control" asp-items="ViewBag.InstructorID"></select>
+                <label asp-for="Class.ClassSchedule" class="control-label"></label>
+                <select asp-for="Class.ClassSchedule" class="form-control" asp-items="@(new SelectList(Model.ScheduleDays, "Day", "Day" ))"></select>
             </div>
             <div class="form-group">
-                <label asp-for="ClassTime_Start" class="control-label"></label>
-                <input asp-for="ClassTime_Start" class="form-control" />
-                <span asp-validation-for="ClassTime_Start" class="text-danger"></span>
+                <label asp-for="Class.InstructorID" class="control-label"></label>
+                <select asp-for="Class.InstructorID" class="form-control" asp-items="@(new SelectList(Model.Instructors, "InstructorID", "FullName" ))"></select>
             </div>
             <div class="form-group">
-                <label asp-for="ClassTime_End" class="control-label"></label>
-                <input asp-for="ClassTime_End" class="form-control" />
-                <span asp-validation-for="ClassTime_End" class="text-danger"></span>
+                <label asp-for="Class.ClassTime_Start" class="control-label"></label>
+                <input asp-for="Class.ClassTime_Start" class="form-control" />
+                <span asp-validation-for="Class.ClassTime_Start" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Class.ClassTime_End" class="control-label"></label>
+                <input asp-for="Class.ClassTime_End" class="form-control" />
+                <span asp-validation-for="Class.ClassTime_End" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

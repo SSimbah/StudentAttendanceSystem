@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Domain.DataAccess;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using StudentAttendanceSystem.Data;
-using StudentAttendanceSystem.Models;
+using StudentAttendanceSystem.ViewModels;
 
 namespace StudentAttendanceSystem.Controllers
 {
@@ -22,7 +19,7 @@ namespace StudentAttendanceSystem.Controllers
         // GET: ClassModels
         public async Task<IActionResult> Index()
         {
-            var databaseDbContext = _context.ClassModels.Include(c => c.Instructor);
+            var databaseDbContext = _context.ClassModels.Include(c => c.Instructor).Include(j => j.Subject);
             return View(await databaseDbContext.ToListAsync());
         }
 
@@ -36,6 +33,7 @@ namespace StudentAttendanceSystem.Controllers
 
             var classModel = await _context.ClassModels
                 .Include(c => c.Instructor)
+                .Include(j => j.Subject)
                 .FirstOrDefaultAsync(m => m.ClassID == id);
             if (classModel == null)
             {
@@ -48,19 +46,11 @@ namespace StudentAttendanceSystem.Controllers
         // GET: ClassModels/Create
         public IActionResult Create()
         {
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "InstructorID", "FullName");
-            List<SelectListItem> ScheduleDay = new()
-            {
-                new SelectListItem { Value = "Monday", Text = "Monday" },
-                new SelectListItem { Value = "Tuesday", Text = "Tuesday" },
-                new SelectListItem { Value = "Wednesday", Text = "Wednesday" },
-                new SelectListItem { Value = "Thursday", Text = "Thursday" },
-                new SelectListItem { Value = "Friday", Text = "Friday" },
-                new SelectListItem { Value = "Saturday", Text = "Saturday" },
-                new SelectListItem { Value = "Sunday", Text = "Sunday" }
-            };
-            ViewBag.ScheduleDay = ScheduleDay;
-            return View();
+            var classViewModel = new ClassViewModel();
+            classViewModel.Subjects = _context.Subjects.ToList();
+            classViewModel.Instructors= _context.Instructors.ToList();
+
+            return View(classViewModel);
         }
 
         // POST: ClassModels/Create
@@ -68,19 +58,11 @@ namespace StudentAttendanceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ClassModel classModel)
+        public async Task<IActionResult> Create(ClassViewModel classViewModel)
         {
-            _context.Add(classModel);
+            _context.Add(classViewModel.Class);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Add(classModel);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //ViewData["InstructorID"] = new SelectList(_context.Instructors, "InstructorID", "FirstName", classModel.InstructorID);
-            //return View(classModel);
         }
 
         // GET: ClassModels/Edit/5
@@ -96,21 +78,11 @@ namespace StudentAttendanceSystem.Controllers
             {
                 return NotFound();
             }
-            ViewData["InstructorID"] = new SelectList(_context.Instructors, "InstructorID", "FullName", classModel.InstructorID);
-            List<SelectListItem> ScheduleDay = new()
-            {
-                new SelectListItem { Value = "Monday", Text = "Monday" },
-                new SelectListItem { Value = "Tuesday", Text = "Tuesday" },
-                new SelectListItem { Value = "Wednesday", Text = "Wednesday" },
-                new SelectListItem { Value = "Thursday", Text = "Thursday" },
-                new SelectListItem { Value = "Friday", Text = "Friday" },
-                new SelectListItem { Value = "Saturday", Text = "Saturday" },
-                new SelectListItem { Value = "Sunday", Text = "Sunday" }
-            };
-
-            //assigning SelectListItem to view Bag
-            ViewBag.ScheduleDay = ScheduleDay;
-            return View(classModel);
+            var classViewModel = new ClassViewModel();
+            classViewModel.Subjects = _context.Subjects.ToList();
+            classViewModel.Instructors = _context.Instructors.ToList();
+            classViewModel.Class = classModel;
+            return View(classViewModel);
         }
 
         // POST: ClassModels/Edit/5
@@ -118,39 +90,14 @@ namespace StudentAttendanceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ClassModel classModel)
+        public async Task<IActionResult> Edit(ClassViewModel classViewModel)
         {
-            _context.Update(classModel);
+            classViewModel.Subjects = _context.Subjects.ToList();
+            classViewModel.Instructors = _context.Instructors.ToList();
+
+            _context.Update(classViewModel.Class);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-
-            //if (id != classModel.ClassID)
-            //{
-            //    return NotFound();
-            //}
-
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        _context.Update(classModel);
-            //        await _context.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!ClassModelExists(classModel.ClassID))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //ViewData["InstructorID"] = new SelectList(_context.Instructors, "InstructorID", "FirstName", classModel.InstructorID);
-            //return View(classModel);
         }
 
         // GET: ClassModels/Delete/5
@@ -163,6 +110,7 @@ namespace StudentAttendanceSystem.Controllers
 
             var classModel = await _context.ClassModels
                 .Include(c => c.Instructor)
+                .Include(j => j.Subject)
                 .FirstOrDefaultAsync(m => m.ClassID == id);
             if (classModel == null)
             {

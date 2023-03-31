@@ -1,10 +1,10 @@
-﻿@model IEnumerable<StudentAttendanceSystem.Models.ClassModel>
+﻿@model IEnumerable<Domain.Entities.ClassModel>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Subject List</h1>
+<h1>Class List</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,7 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ClassSubject)
+                @Html.DisplayNameFor(model => model.ClassName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Subject)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ClassSchedule)
@@ -34,7 +37,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ClassSubject)
+                @Html.DisplayFor(modelItem => item.ClassName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject.SubjectCode)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ClassSchedule)

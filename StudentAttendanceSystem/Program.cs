@@ -1,5 +1,6 @@
+using Domain.DataAccess;
+//using StudentAttendanceSystem.Data;
 using Microsoft.EntityFrameworkCore;
-using StudentAttendanceSystem.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -29,11 +29,11 @@ namespace StudentAttendanceSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClassID"));
 
-                    b.Property<string>("ClassSchedule")
+                    b.Property<string>("ClassName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ClassSubject")
+                    b.Property<string>("ClassSchedule")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -48,9 +48,22 @@ namespace StudentAttendanceSystem.Migrations
                     b.Property<int>("InstructorID")
                         .HasColumnType("int");
 
+                    b.Property<string>("SubjectCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SubjectID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ClassID");
 
                     b.HasIndex("InstructorID");
+
+                    b.HasIndex("SubjectID");
 
                     b.ToTable("ClassModels");
                 });
@@ -154,6 +167,27 @@ namespace StudentAttendanceSystem.Migrations
                     b.ToTable("Students");
                 });
 
+            modelBuilder.Entity("StudentAttendanceSystem.Models.Subject", b =>
+                {
+                    b.Property<int>("SubjectID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubjectID"));
+
+                    b.Property<string>("SubjectCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubjectDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SubjectID");
+
+                    b.ToTable("Subjects");
+                });
+
             modelBuilder.Entity("StudentAttendanceSystem.Models.ClassModel", b =>
                 {
                     b.HasOne("StudentAttendanceSystem.Models.Instructor", "Instructor")
@@ -162,7 +196,15 @@ namespace StudentAttendanceSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("StudentAttendanceSystem.Models.Subject", "Subject")
+                        .WithMany()
+                        .HasForeignKey("SubjectID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Instructor");
+
+                    b.Navigation("Subject");
                 });
 
             modelBuilder.Entity("StudentAttendanceSystem.Models.ClassStudent", b =>

@@ -1,48 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Domain.DataAccess;
+using Domain.Entities;
+using Domain.Repositories;
+using Domain.RepositoryInterfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using StudentAttendanceSystem.Data;
-using StudentAttendanceSystem.Models;
 
 namespace StudentAttendanceSystem.Controllers
 {
     public class InstructorsController : Controller
     {
-        private readonly DatabaseDbContext _context;
+        //private readonly DatabaseDbContext _context;
+
+        //public InstructorsController(DatabaseDbContext context)
+        //{
+        //    _context = context;
+        //}
+        private IInstructorRepository instructorRepository;
 
         public InstructorsController(DatabaseDbContext context)
         {
-            _context = context;
+            instructorRepository = new InstructorRepository(context);
         }
 
         // GET: Instructors
         public async Task<IActionResult> Index()
         {
-              return _context.Instructors != null ? 
-                          View(await _context.Instructors.ToListAsync()) :
-                          Problem("Entity set 'DatabaseDbContext.Instructors'  is null.");
+              //return _context.Instructors != null ? 
+              //            View(await _context.Instructors.ToListAsync()) :
+              //            Problem("Entity set 'DatabaseDbContext.Instructors'  is null.");
+
+            var instructors = await instructorRepository.GetInstructorsAsync();
+
+            return View(instructors);
         }
 
         // GET: Instructors/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null || _context.Instructors == null)
-            {
-                return NotFound();
-            }
+            var instructor = await instructorRepository.GetInstructorByIdAsync(id);
 
-            var instructor = await _context.Instructors
-                .FirstOrDefaultAsync(m => m.InstructorID == id);
-            if (instructor == null)
+            if (id == 0 || instructor == null)
             {
                 return NotFound();
             }
 
             return View(instructor);
+            //if (id == null || _context.Instructors == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //var instructor = await _context.Instructors
+            //    .FirstOrDefaultAsync(m => m.InstructorID == id);
+            //if (instructor == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return View(instructor);
         }
 
         // GET: Instructors/Create
@@ -60,26 +75,23 @@ namespace StudentAttendanceSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(instructor);
-                await _context.SaveChangesAsync();
+                instructorRepository.CreateInstructortAsync(instructor);
+                //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(instructor);
         }
 
         // GET: Instructors/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.Instructors == null)
+            var instructor = await instructorRepository.GetInstructorByIdAsync(id);
+
+            if (id == 0 || instructor == null)
             {
                 return NotFound();
             }
 
-            var instructor = await _context.Instructors.FindAsync(id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
             return View(instructor);
         }
 
@@ -90,8 +102,8 @@ namespace StudentAttendanceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Instructor instructor)
         {
-            _context.Update(instructor);
-            await _context.SaveChangesAsync();
+            instructorRepository.UpdateInstructorAsync(instructor);
+            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
 
             //if (id != instructor.InstructorID)
@@ -123,45 +135,53 @@ namespace StudentAttendanceSystem.Controllers
         }
 
         // GET: Instructors/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.Instructors == null)
+            if (id == 0)
             {
                 return NotFound();
             }
 
-            var instructor = await _context.Instructors
-                .FirstOrDefaultAsync(m => m.InstructorID == id);
-            if (instructor == null)
-            {
-                return NotFound();
-            }
+            await instructorRepository.DeleteInstructorAsync(id);
 
-            return View(instructor);
+            return RedirectToAction(nameof(Index));
+            //if (id == null || _context.Instructors == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //var instructor = await _context.Instructors
+            //    .FirstOrDefaultAsync(m => m.InstructorID == id);
+            //if (instructor == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return View(instructor);
         }
 
         // POST: Instructors/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Instructors == null)
-            {
-                return Problem("Entity set 'DatabaseDbContext.Instructors'  is null.");
-            }
-            var instructor = await _context.Instructors.FindAsync(id);
-            if (instructor != null)
-            {
-                _context.Instructors.Remove(instructor);
-            }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Instructors == null)
+        //    {
+        //        return Problem("Entity set 'DatabaseDbContext.Instructors'  is null.");
+        //    }
+        //    var instructor = await _context.Instructors.FindAsync(id);
+        //    if (instructor != null)
+        //    {
+        //        _context.Instructors.Remove(instructor);
+        //    }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
-        private bool InstructorExists(int id)
-        {
-          return (_context.Instructors?.Any(e => e.InstructorID == id)).GetValueOrDefault();
-        }
+        //private bool InstructorExists(int id)
+        //{
+        //  return (_context.Instructors?.Any(e => e.InstructorID == id)).GetValueOrDefault();
+        //}
     }
 }

@@ -9,9 +9,19 @@ namespace StudentAttendanceSystem.Models
         [ScaffoldColumn(false)]
         public int ClassID { get; set; }
 
+        [DisplayName("Class Name")]
+        [Required(ErrorMessage = "Please Enter Class Name")]
+        public string ClassName { get; set; }
+
+        [DisplayName("Subject Code")]
+        [Required(ErrorMessage = "Please Enter Subject Code")]
+        public string SubjectCode { get; set; }
+
         [DisplayName("Class Subject")]
-        [Required(ErrorMessage = "Please Enter Class Subject")]
-        public string ClassSubject { get; set; }
+        [Required(ErrorMessage = "Please Enter Subject Name")]
+        public string SubjectName { get; set; }
+
+        public int SubjectID { get; set; }
 
         [DisplayName("Class Schedule")]
         [Required(ErrorMessage = "Please Enter Class Schedule")]
@@ -28,6 +38,7 @@ namespace StudentAttendanceSystem.Models
         [DataType(DataType.Time)]
         [Required(ErrorMessage = "Please Enter Class End Time")]
         public string ClassTime_End { get; set; }
+        public Subject Subject { get; set; }
         public Instructor Instructor { get; set; }
     }
 }

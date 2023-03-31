@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Domain.DataAccess;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using StudentAttendanceSystem.Data;
-using StudentAttendanceSystem.Models;
+using StudentAttendanceSystem.ViewModels;
 
 namespace StudentAttendanceSystem.Controllers
 {
@@ -20,10 +17,22 @@ namespace StudentAttendanceSystem.Controllers
         }
 
         // GET: ClassStudents
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var databaseDbContext = _context.ClassStudents.Include(c => c.Class).Include(c => c.Student);
-            return View(await databaseDbContext.ToListAsync());
+            ViewData["ClassID"] = new SelectList(_context.ClassModels, "ClassName", "ClassName");
+            ViewData["CurrentFilter"] = searchString;
+
+            var classSubject = from s in _context.ClassStudents.Include(c => c.Class).Include(c => c.Student).Include(c => c.Class.Subject)
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                classSubject = classSubject.Where(s => s.Class.ClassName.Contains(searchString));
+            }
+
+
+            //var databaseDbContext = _context.ClassStudents.Include(c => c.Class).Include(c => c.Student);
+            //return View(await databaseDbContext.AsNoTracking().ToListAsync());
+            return View(await classSubject.AsNoTracking().ToListAsync());
         }
 
         // GET: ClassStudents/Details/5
@@ -49,8 +58,9 @@ namespace StudentAttendanceSystem.Controllers
         // GET: ClassStudents/Create
         public IActionResult Create()
         {
-            ViewData["ClassID"] = new SelectList(_context.ClassModels, "ClassID", "ClassSubject");
+            ViewData["ClassID"] = new SelectList(_context.ClassModels.Include(j => j.Subject), "ClassID", "ClassName");
             ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "FullName");
+           
             return View();
         }
 

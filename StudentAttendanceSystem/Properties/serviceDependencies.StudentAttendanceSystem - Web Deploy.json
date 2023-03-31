@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "appInsights1": {
+      "ignored": "true",
+      "type": "appInsights"
+    },
+    "storage1": {
+      "ignored": "true",
+      "type": "storage"
+    },
+    "mssql1": {
+      "secretStore": null,
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/studentattendancesystemserver/databases/StudentAttendanceSystem_db",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:DatabaseDbContext"
+    }
+  }
+}

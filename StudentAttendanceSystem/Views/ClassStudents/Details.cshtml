@@ -1,4 +1,4 @@
-﻿@model StudentAttendanceSystem.Models.ClassStudent
+﻿@model Domain.Entities.ClassStudent
 
 @{
     ViewData["Title"] = "Details";
@@ -11,10 +11,10 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Class)
+            @Html.DisplayNameFor(model => model.Class.Subject)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Class.ClassSubject)
+            @Html.DisplayFor(model => model.Class.Subject.SubjectCode)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Student)

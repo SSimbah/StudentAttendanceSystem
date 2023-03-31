@@ -12,5 +12,6 @@ namespace StudentAttendanceSystem.Data
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<ClassModel> ClassModels { get; set; }
         public DbSet<ClassStudent> ClassStudents { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
     }
 }

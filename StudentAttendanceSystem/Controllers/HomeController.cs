@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StudentAttendanceSystem.Models;
+﻿using Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace StudentAttendanceSystem.Controllers
