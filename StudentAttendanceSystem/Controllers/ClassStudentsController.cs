@@ -17,21 +17,13 @@ namespace StudentAttendanceSystem.Controllers
         }
 
         // GET: ClassStudents
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(int? id)
         {
-            ViewData["ClassID"] = new SelectList(_context.ClassModels, "ClassName", "ClassName");
-            ViewData["CurrentFilter"] = searchString;
-
             var classSubject = from s in _context.ClassStudents.Include(c => c.Class).Include(c => c.Student).Include(c => c.Class.Subject)
-                           select s;
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                classSubject = classSubject.Where(s => s.Class.ClassName.Contains(searchString));
-            }
+                               select s;
 
+            classSubject = classSubject.Where(s => s.ClassID == id);
 
-            //var databaseDbContext = _context.ClassStudents.Include(c => c.Class).Include(c => c.Student);
-            //return View(await databaseDbContext.AsNoTracking().ToListAsync());
             return View(await classSubject.AsNoTracking().ToListAsync());
         }
 
@@ -46,6 +38,7 @@ namespace StudentAttendanceSystem.Controllers
             var classStudent = await _context.ClassStudents
                 .Include(c => c.Class)
                 .Include(c => c.Student)
+                .Include(c => c.Class.Subject)
                 .FirstOrDefaultAsync(m => m.ClassStudentID == id);
             if (classStudent == null)
             {
@@ -56,12 +49,20 @@ namespace StudentAttendanceSystem.Controllers
         }
 
         // GET: ClassStudents/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int? id)
         {
-            ViewData["ClassID"] = new SelectList(_context.ClassModels.Include(j => j.Subject), "ClassID", "ClassName");
+            var classModel = await _context.ClassModels.FindAsync(id);
+
+            //var categorySelectListItems = _context.ClassModels.Select(c => new SelectListItem
+            //{
+            //    Value = c.ClassID.ToString(),
+            //    Text = $"{c.ClassName} | {c.Subject.SubjectCode}"
+            //});
+            /////ViewData["ClassID"] = new SelectList(_context.ClassModels.Include(j => j.Subject), "ClassID", "ClassName");
+            //ViewData["ClassID"] = new SelectList(categorySelectListItems, "Value", "Text");
             ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "FullName");
            
-            return View();
+            return View(classModel);
         }
 
         // POST: ClassStudents/Create
@@ -99,7 +100,13 @@ namespace StudentAttendanceSystem.Controllers
             {
                 return NotFound();
             }
-            ViewData["ClassID"] = new SelectList(_context.ClassModels, "ClassID", "ClassSubject", classStudent.ClassID);
+            var categorySelectListItems = _context.ClassModels.Select(c => new SelectListItem
+            {
+                Value = c.ClassID.ToString(),
+                Text = $"{c.ClassName} | {c.Subject.SubjectCode}"
+            });
+            ViewData["ClassID"] = new SelectList(categorySelectListItems, "Value", "Text");
+            //ViewData["ClassID"] = new SelectList(_context.ClassModels, "ClassID", "ClassSubject", classStudent.ClassID);
             ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "FullName", classStudent.StudentID);
             return View(classStudent);
         }
@@ -156,6 +163,7 @@ namespace StudentAttendanceSystem.Controllers
             var classStudent = await _context.ClassStudents
                 .Include(c => c.Class)
                 .Include(c => c.Student)
+                .Include(c => c.Class.Subject)
                 .FirstOrDefaultAsync(m => m.ClassStudentID == id);
             if (classStudent == null)
             {

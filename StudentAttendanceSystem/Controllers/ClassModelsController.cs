@@ -143,5 +143,13 @@ namespace StudentAttendanceSystem.Controllers
         {
           return (_context.ClassModels?.Any(e => e.ClassID == id)).GetValueOrDefault();
         }
+
+
+        // Class Student List
+        public async Task<IActionResult> StudentList(int? id)
+        {
+            // redirect to another action and controller with ID
+            return RedirectToAction( "Index", "ClassStudents" , new { id = id });
+        }
     }
 }

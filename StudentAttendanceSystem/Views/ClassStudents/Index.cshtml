@@ -10,16 +10,6 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Find by subject code:
-            <select type="text" asp-items="ViewBag.ClassID" asp-for="@ViewData["CurrentFilter"]"></select>
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
-        </p>
-    </div>
-</form>
 <table class="table">
     <thead>
         <tr>
@@ -30,6 +20,9 @@
                 @Html.DisplayNameFor(model => model.Class.Subject)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Class.ClassSchedule)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Student)
             </th>
             <th></th>
@@ -37,6 +30,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
+            <a asp-action="Create" asp-route-id="@item.ClassID">Create New</a>
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Class.ClassName)
@@ -45,12 +39,16 @@
                 @Html.DisplayFor(modelItem => item.Class.Subject.SubjectCode)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.Class.ClassSchedule)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Student.FullName)
                 </td>
             <td>
+                 
                 <a asp-action="Edit" asp-route-id="@item.ClassStudentID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ClassStudentID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ClassStudentID">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.ClassStudentID">Delete</a>
             </td>
         </tr>
 }

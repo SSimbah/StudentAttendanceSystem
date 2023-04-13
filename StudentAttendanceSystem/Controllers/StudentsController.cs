@@ -112,6 +112,12 @@ namespace StudentAttendanceSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> StudentClassList(int? id)
+        {
+            // redirect to another action and controller with ID
+            return RedirectToAction("Index", "StudentClasses", new { id = id });
+        }
+
         //// POST: Students/Delete/5
         ////[HttpPost, ActionName("Delete")]
         //[HttpPost]

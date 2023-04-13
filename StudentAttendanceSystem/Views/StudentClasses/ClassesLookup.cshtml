@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Domain.Entities.ClassModel>
+
+<h1>Class List</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ClassName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Subject.SubjectName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClassSchedule)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClassTime_Start)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClassTime_End)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Instructor)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClassName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject.SubjectNameExt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClassSchedule)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClassTime_Start)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClassTime_End)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Instructor.FullName)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Add", "AddClass", new { classId = item.ClassID, studentId = ViewBag.StudentID })      
+                    </td>
+            </tr>
+        }
+    </tbody>
+</table>

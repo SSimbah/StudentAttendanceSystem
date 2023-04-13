@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Domain.Entities.ClassStudent>
+
+
+<h2>Student Name: @ViewBag.StudentName</h2>
+<h3>Class List</h3>
+
+<p>
+@*    <a asp-action="AddClass" asp-route-id="ClassID">Create New</a>
+*@
+
+    @Html.ActionLink("Add Class", "ClassesLookup", new { studentId = ViewBag.StudentID })        
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Class.ClassName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Class.Subject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Class.ClassSchedule)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Class.ClassTime_Start)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Class.ClassTime_End)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Class.Instructor)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Class.ClassName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Class.Subject.SubjectCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Class.ClassSchedule)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Class.ClassTime_Start)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Class.ClassTime_End)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Class.Instructor.FullName)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "DeleteClass", new { classStudentId = item.ClassStudentID, studentId = ViewBag.StudentID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
