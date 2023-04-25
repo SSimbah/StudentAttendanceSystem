@@ -24,11 +24,6 @@ namespace StudentAttendanceSystem.Controllers
                 var students = await studentRepository.GetStudentsAsync();
 
                 return View(students);
-
-                //return _context.Students != null ?
-                //          View(await _context.Students.ToListAsync()) :
-                //          Problem("Entity set 'DatabaseDbContext.Students'  is null.");
-                //return View(await _context.Students.ToListAsync());
             }
             catch (Exception e)
             {

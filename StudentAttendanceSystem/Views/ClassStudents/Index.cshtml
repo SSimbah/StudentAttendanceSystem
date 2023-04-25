@@ -6,50 +6,40 @@
 
 <h1>Class Student List</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Class)
+                @Html.DisplayNameFor(model => model.Student.StudentNum)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Class.Subject)
+                @Html.DisplayNameFor(model => model.Student.FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Class.ClassSchedule)
+                @Html.DisplayNameFor(model => model.Student.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Student)
+                @Html.DisplayNameFor(model => model.Student.Age)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-            <a asp-action="Create" asp-route-id="@item.ClassID">Create New</a>
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Class.ClassName)
+                    @Html.DisplayFor(modelItem => item.Student.StudentNum)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Class.Subject.SubjectCode)
+                    @Html.DisplayFor(modelItem => item.Student.FirstName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Class.ClassSchedule)
+                    @Html.DisplayFor(modelItem => item.Student.LastName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Student.FullName)
+                    @Html.DisplayFor(modelItem => item.Student.Age)
                 </td>
-            <td>
-                 
-                <a asp-action="Edit" asp-route-id="@item.ClassStudentID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ClassStudentID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ClassStudentID">Delete</a>
-            </td>
         </tr>
 }
     </tbody>

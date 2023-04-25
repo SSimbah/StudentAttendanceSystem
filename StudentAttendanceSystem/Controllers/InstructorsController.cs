@@ -9,12 +9,6 @@ namespace StudentAttendanceSystem.Controllers
 {
     public class InstructorsController : Controller
     {
-        //private readonly DatabaseDbContext _context;
-
-        //public InstructorsController(DatabaseDbContext context)
-        //{
-        //    _context = context;
-        //}
         private IInstructorRepository instructorRepository;
 
         public InstructorsController(DatabaseDbContext context)
@@ -45,19 +39,6 @@ namespace StudentAttendanceSystem.Controllers
             }
 
             return View(instructor);
-            //if (id == null || _context.Instructors == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //var instructor = await _context.Instructors
-            //    .FirstOrDefaultAsync(m => m.InstructorID == id);
-            //if (instructor == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return View(instructor);
         }
 
         // GET: Instructors/Create
@@ -105,33 +86,6 @@ namespace StudentAttendanceSystem.Controllers
             instructorRepository.UpdateInstructorAsync(instructor);
             //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-
-            //if (id != instructor.InstructorID)
-            //{
-            //    return NotFound();
-            //}
-
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        _context.Update(instructor);
-            //        await _context.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!InstructorExists(instructor.InstructorID))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //return View(instructor);
         }
 
         // GET: Instructors/Delete/5
@@ -145,43 +99,14 @@ namespace StudentAttendanceSystem.Controllers
             await instructorRepository.DeleteInstructorAsync(id);
 
             return RedirectToAction(nameof(Index));
-            //if (id == null || _context.Instructors == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //var instructor = await _context.Instructors
-            //    .FirstOrDefaultAsync(m => m.InstructorID == id);
-            //if (instructor == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return View(instructor);
         }
-
-        // POST: Instructors/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    if (_context.Instructors == null)
-        //    {
-        //        return Problem("Entity set 'DatabaseDbContext.Instructors'  is null.");
-        //    }
-        //    var instructor = await _context.Instructors.FindAsync(id);
-        //    if (instructor != null)
-        //    {
-        //        _context.Instructors.Remove(instructor);
-        //    }
-            
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool InstructorExists(int id)
-        //{
-        //  return (_context.Instructors?.Any(e => e.InstructorID == id)).GetValueOrDefault();
-        //}
+        public async Task<IActionResult> InstructorClassList(int id)
+        {
+            var instructor = await instructorRepository.GetInstructorByIdAsync(id);
+            ViewBag.InstructorName = instructor.FullName;
+            var instructorClasses = await instructorRepository.GetInstructorClassesAsync(id);
+            ViewBag.StudentID = id;
+            return View(instructorClasses);
+        }
     }
 }

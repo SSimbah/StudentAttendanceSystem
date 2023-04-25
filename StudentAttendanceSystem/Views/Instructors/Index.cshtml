@@ -55,9 +55,8 @@
                 @Html.DisplayFor(modelItem => item.Age)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.InstructorID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.InstructorID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.InstructorID">Delete</a>
+                    <a asp-action="InstructorClassList" asp-route-id="@item.InstructorID">Classes</a>&nbsp;|&nbsp;<a asp-action="Edit" asp-route-id="@item.InstructorID">Edit</a>&nbsp;|&nbsp;<a asp-action="Delete" asp-route-id="@item.InstructorID">Delete</a>
+
             </td>
         </tr>
 }

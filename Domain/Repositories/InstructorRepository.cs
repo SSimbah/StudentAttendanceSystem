@@ -38,6 +38,18 @@ namespace Domain.Repositories
             return instructors;
         }
 
+        public async Task<IEnumerable<ClassModel>> GetClassesAsync()
+        {
+            var classes = await context.ClassModels.Include(j => j.Subject).ToListAsync();
+            return classes;
+        }
+        public async Task<IEnumerable<ClassModel>> GetInstructorClassesAsync(int instructorId)
+        {
+            var classes = await GetClassesAsync();
+            var instructorClasses = classes.Where(i => i.InstructorID == instructorId);
+            return instructorClasses;
+        }
+
         public async Task UpdateInstructorAsync(Instructor instructor)
         {
             context.Instructors.Update(instructor);
