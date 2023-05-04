@@ -42,5 +42,9 @@ namespace Domain.Repositories
             context.Students.Update(student);
             await context.SaveChangesAsync();
         }
+        public async Task CheckInputAsync(Student student)
+        {
+            context.Entry(student).State = EntityState.Modified;
+        }
     }
 }

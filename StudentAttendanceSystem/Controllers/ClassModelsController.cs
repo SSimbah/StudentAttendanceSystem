@@ -1,5 +1,7 @@
 ﻿using Domain.DataAccess;
 using Domain.Entities;
+using Domain.Repositories;
+using Domain.RepositoryInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,32 +11,30 @@ namespace StudentAttendanceSystem.Controllers
 {
     public class ClassModelsController : Controller
     {
-        private readonly DatabaseDbContext _context;
+        private IClassRepository classRepository;
 
         public ClassModelsController(DatabaseDbContext context)
         {
-            _context = context;
+            classRepository = new ClassRepository(context);
         }
 
         // GET: ClassModels
         public async Task<IActionResult> Index()
         {
-            var databaseDbContext = _context.ClassModels.Include(c => c.Instructor).Include(j => j.Subject);
-            return View(await databaseDbContext.ToListAsync());
+            var classes = await classRepository.GetClassesAsync();
+
+            return View(classes);
         }
 
         // GET: ClassModels/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null || _context.ClassModels == null)
+
+            var classModel = await classRepository.GetClassByIdAsync(id);
+            if (id == null || classModel == null)
             {
                 return NotFound();
             }
-
-            var classModel = await _context.ClassModels
-                .Include(c => c.Instructor)
-                .Include(j => j.Subject)
-                .FirstOrDefaultAsync(m => m.ClassID == id);
             if (classModel == null)
             {
                 return NotFound();
@@ -47,8 +47,8 @@ namespace StudentAttendanceSystem.Controllers
         public IActionResult Create()
         {
             var classViewModel = new ClassViewModel();
-            classViewModel.Subjects = _context.Subjects.ToList();
-            classViewModel.Instructors= _context.Instructors.ToList();
+            classViewModel.Subjects = classRepository.GetSubjects();
+            classViewModel.Instructors= classRepository.GetInstructors();
 
             return View(classViewModel);
         }
@@ -60,27 +60,23 @@ namespace StudentAttendanceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ClassViewModel classViewModel)
         {
-            _context.Add(classViewModel.Class);
-            await _context.SaveChangesAsync();
+            //Create a Class
+            var classModel = classViewModel.Class;
+            classRepository.CreateClassesAsync(classModel);
             return RedirectToAction(nameof(Index));
         }
 
         // GET: ClassModels/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.ClassModels == null)
-            {
-                return NotFound();
-            }
-
-            var classModel = await _context.ClassModels.FindAsync(id);
+            var classModel = await classRepository.GetClassByIdAsync(id);
             if (classModel == null)
             {
                 return NotFound();
             }
             var classViewModel = new ClassViewModel();
-            classViewModel.Subjects = _context.Subjects.ToList();
-            classViewModel.Instructors = _context.Instructors.ToList();
+            classViewModel.Subjects = classRepository.GetSubjects();
+            classViewModel.Instructors = classRepository.GetInstructors();
             classViewModel.Class = classModel;
             return View(classViewModel);
         }
@@ -92,58 +88,27 @@ namespace StudentAttendanceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ClassViewModel classViewModel)
         {
-            classViewModel.Subjects = _context.Subjects.ToList();
-            classViewModel.Instructors = _context.Instructors.ToList();
+            classViewModel.Subjects = classRepository.GetSubjects();
+            classViewModel.Instructors = classRepository.GetInstructors();
 
-            _context.Update(classViewModel.Class);
-            await _context.SaveChangesAsync();
+            //Update Class Model
+            var classModel = classViewModel.Class;
+            classRepository.UpdateClassesAsync(classModel);
             return RedirectToAction(nameof(Index));
         }
 
         // GET: ClassModels/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.ClassModels == null)
+            if (id == 0)
             {
                 return NotFound();
             }
 
-            var classModel = await _context.ClassModels
-                .Include(c => c.Instructor)
-                .Include(j => j.Subject)
-                .FirstOrDefaultAsync(m => m.ClassID == id);
-            if (classModel == null)
-            {
-                return NotFound();
-            }
+            await classRepository.DeleteClassAsync(id);
 
-            return View(classModel);
-        }
-
-        // POST: ClassModels/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.ClassModels == null)
-            {
-                return Problem("Entity set 'DatabaseDbContext.ClassModels'  is null.");
-            }
-            var classModel = await _context.ClassModels.FindAsync(id);
-            if (classModel != null)
-            {
-                _context.ClassModels.Remove(classModel);
-            }
-            
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        private bool ClassModelExists(int id)
-        {
-          return (_context.ClassModels?.Any(e => e.ClassID == id)).GetValueOrDefault();
-        }
-
 
         // Class Student List
         public async Task<IActionResult> StudentList(int? id)

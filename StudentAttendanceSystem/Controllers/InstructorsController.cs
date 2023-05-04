@@ -3,7 +3,6 @@ using Domain.Entities;
 using Domain.Repositories;
 using Domain.RepositoryInterfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace StudentAttendanceSystem.Controllers
 {

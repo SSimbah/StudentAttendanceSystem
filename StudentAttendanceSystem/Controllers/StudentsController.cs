@@ -112,30 +112,5 @@ namespace StudentAttendanceSystem.Controllers
             // redirect to another action and controller with ID
             return RedirectToAction("Index", "StudentClasses", new { id = id });
         }
-
-        //// POST: Students/Delete/5
-        ////[HttpPost, ActionName("Delete")]
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    if (_context.Students == null)
-        //    {
-        //        return Problem("Entity set 'DatabaseDbContext.Students'  is null.");
-        //    }
-        //    var student = await _context.Students.FindAsync(id);
-        //    if (student != null)
-        //    {
-        //        _context.Students.Remove(student);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool StudentExists(int id)
-        //{
-        //    return (_context.Students?.Any(e => e.StudentID == id)).GetValueOrDefault();
-        //}
     }
 }

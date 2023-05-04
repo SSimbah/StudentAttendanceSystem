@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Domain.Entities;
 namespace Domain.RepositoryInterfaces
 {
-    internal class ClassRepositoryInterface
+    public interface IClassRepository
     {
+        Task<IEnumerable<ClassModel>> GetClassesAsync();
+        Task<ClassModel> GetClassByIdAsync(int classId);
+        Task CreateClassesAsync(ClassModel classModel);
+        Task UpdateClassesAsync(ClassModel classModel);
+        Task DeleteClassAsync(int classId);
+        List<Subject> GetSubjects();
+        List<Instructor> GetInstructors();
+        Task CheckInputAsync(ClassModel classModel);
     }
 }

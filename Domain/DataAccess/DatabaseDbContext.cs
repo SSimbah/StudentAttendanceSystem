@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
-using Microsoft.Extensions.Options;
+﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.DataAccess
 {

@@ -55,5 +55,9 @@ namespace Domain.Repositories
             context.Instructors.Update(instructor);
             await context.SaveChangesAsync();
         }
+        public async Task CheckInputAsync(Instructor instructor)
+        {
+            context.Entry(instructor).State = EntityState.Modified;
+        }
     }
 }

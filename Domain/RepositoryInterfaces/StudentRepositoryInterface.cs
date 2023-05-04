@@ -9,5 +9,6 @@ namespace Domain.RepositoryInterfaces
         Task CreateStudentAsync(Student student);
         Task UpdateStudentAsync(Student student);
         Task DeleteStudentAsync(int studentId);
+        Task CheckInputAsync(Student student);
     }
 }

@@ -10,5 +10,6 @@ namespace Domain.RepositoryInterfaces
         Task UpdateInstructorAsync(Instructor instructor);
         Task DeleteInstructorAsync(int instructorId);
         Task<IEnumerable<ClassModel>> GetInstructorClassesAsync(int instructorId);
+        Task CheckInputAsync(Instructor instructor);
     }
 }
