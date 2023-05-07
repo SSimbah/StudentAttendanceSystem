@@ -27,7 +27,7 @@ namespace Domain.Repositories
         }
         public async Task<ClassModel> GetClassByIdAsync(int classId)
         {
-            var classModel = await context.ClassModels.FindAsync(classId);
+            var classModel = await context.ClassModels.Include(c => c.Instructor).Include(j => j.Subject).Where(c => c.ClassID == classId).FirstAsync();
             return classModel;
         }
         public async Task CreateClassesAsync(ClassModel classModel)
@@ -46,15 +46,15 @@ namespace Domain.Repositories
             context.ClassModels.Remove(classModel);
             await context.SaveChangesAsync();
         }
-        public List<Subject> GetSubjects()
+        public async Task<List<Subject>> GetSubjects()
         {
-            var subject = context.Subjects.ToList();
+            var subject = await context.Subjects.ToListAsync();
             return subject;
         }
-        public List<Instructor> GetInstructors()
-        {
-            var intructors = context.Instructors.ToList();
-            return intructors;
-        }
+        //public List<Instructor> GetInstructors()
+        //{
+        //    var intructors = context.Instructors.ToList();
+        //    return intructors;
+        //}
     }
 }

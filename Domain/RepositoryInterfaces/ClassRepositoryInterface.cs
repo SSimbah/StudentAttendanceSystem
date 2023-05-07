@@ -8,8 +8,8 @@ namespace Domain.RepositoryInterfaces
         Task CreateClassesAsync(ClassModel classModel);
         Task UpdateClassesAsync(ClassModel classModel);
         Task DeleteClassAsync(int classId);
-        List<Subject> GetSubjects();
-        List<Instructor> GetInstructors();
+        Task<List<Subject>> GetSubjects();
+        //List<Instructor> GetInstructors();
         Task CheckInputAsync(ClassModel classModel);
     }
 }

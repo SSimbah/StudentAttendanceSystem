@@ -14,5 +14,6 @@ namespace Domain.DataAccess
         public DbSet<ClassModel> ClassModels { get; set; }
         public DbSet<ClassStudent> ClassStudents { get; set; }
         public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Session> Sessions { get; set; }
     }
 }

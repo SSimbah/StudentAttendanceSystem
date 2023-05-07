@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
 
     public class StudentsController : ControllerBase
@@ -174,14 +174,9 @@ namespace WebApi.Controllers
         //}
 
         // API - PUT Student / Update
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStudent(int id, Student student)
+        [HttpPut]
+        public async Task<IActionResult> UpdateStudent(Student student)
         {
-            if (id != student.StudentID)
-            {
-                return BadRequest();
-            }
-
             await studentRepository.CheckInputAsync(student);
             await studentRepository.UpdateStudentAsync(student);
             
@@ -227,7 +222,7 @@ namespace WebApi.Controllers
 
                 if (student == null)
                 {
-                    return NotFound($"Employee with Id = {id} not found");
+                    return NotFound($"Student with Id = {id} not found");
                 }
 
                 await studentRepository.DeleteStudentAsync(id);

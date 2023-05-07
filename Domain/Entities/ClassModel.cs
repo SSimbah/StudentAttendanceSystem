@@ -31,7 +31,7 @@ namespace Domain.Entities
         [Required(ErrorMessage = "Please Enter Class End Time")]
         public string ClassTime_End { get; set; }
 
-        public Subject Subject { get; set; }
-        public Instructor Instructor { get; set; }
+        public Subject? Subject { get; set; }
+        public Instructor? Instructor { get; set; }
     }
 }

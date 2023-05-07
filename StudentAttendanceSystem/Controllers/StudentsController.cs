@@ -3,47 +3,67 @@ using Domain.Entities;
 using Domain.Repositories;
 using Domain.RepositoryInterfaces;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
+using System.Text;
+using System.Text.Json;
 
 namespace StudentAttendanceSystem.Controllers
 {
     public class StudentsController : Controller
     {
-        private IStudentRepository studentRepository;
+        private readonly HttpClient _httpClient;
 
-        public StudentsController(DatabaseDbContext context)
+        public StudentsController(HttpClient httpClient)
         {
-            studentRepository = new StudentRepository(context);
+            _httpClient = httpClient;
         }
 
         // GET: Students
         public async Task<IActionResult> Index()
         {
-            try
+            HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7297/api/Students/GetAllStudent");
+            // Check if the response was successful
+            if (response.IsSuccessStatusCode)
             {
+                // Read the response content as a string
+                string responseBody = await response.Content.ReadAsStringAsync();
 
-                var students = await studentRepository.GetStudentsAsync();
+                // Do something with the response data
+                // ...
+                IEnumerable<Student>? students = JsonConvert.DeserializeObject<IEnumerable<Student>>(responseBody);
 
                 return View(students);
             }
-            catch (Exception e)
+            else
             {
-                ViewBag.Error = e.Message;
+                // Handle the error
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
             }
-            return View("Error");
-            
+
         }
 
         // GET: Students/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var student = await studentRepository.GetStudentByIdAsync(id);
-
-            if (id == 0 || student == null)
+            HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7297/api/Students/GetStudent/" + id);
+            // Check if the response was successful
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
-            }
+                // Read the response content as a string
+                string responseBody = await response.Content.ReadAsStringAsync();
 
-            return View(student);
+                // Do something with the response data
+                // ...
+                Student? student = JsonConvert.DeserializeObject<Student>(responseBody);
+
+                return View(student);
+            }
+            else
+            {
+                // Handle the error
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
         }
 
         // GET: Students/Create
@@ -59,26 +79,55 @@ namespace StudentAttendanceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Student student)
         {
-            if (ModelState.IsValid)
+            // Serialize the model to JSON
+            string json = JsonConvert.SerializeObject(student);
+
+            // Create a request content with the serialized JSON
+            HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Make a POST request to the API
+            HttpResponseMessage response = await _httpClient.PostAsync("https://localhost:7297/api/Students/PostStudent", content);
+
+            // Check if the response was successful
+            if (response.IsSuccessStatusCode)
             {
-                studentRepository.CreateStudentAsync(student);
-                //await _context.SaveChangesAsync();
+                // Read the response content as a string
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // Do something with the response data
+                // ...
+
+                //return Ok(responseBody);
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            else
+            {
+                // Handle the error
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
         }
 
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var student = await studentRepository.GetStudentByIdAsync(id);
-
-            if (id == 0 || student == null)
+            HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7297/api/Students/GetStudent/" + id);
+            // Check if the response was successful
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
-            }
+                // Read the response content as a string
+                string responseBody = await response.Content.ReadAsStringAsync();
 
-            return View(student);
+                // Do something with the response data
+                // ...
+                Student? student = JsonConvert.DeserializeObject<Student>(responseBody);
+
+                return View(student);
+            }
+            else
+            {
+                // Handle the error
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
         }
 
 
@@ -89,22 +138,51 @@ namespace StudentAttendanceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Student student)
         {
-            studentRepository.UpdateStudentAsync(student);
-            return RedirectToAction(nameof(Index));
+            // Serialize the model to JSON
+            string json = JsonConvert.SerializeObject(student);
+
+            // Create a request content with the serialized JSON
+            HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Make a PUT request to the API with the ID in the URL
+            HttpResponseMessage response = await _httpClient.PutAsync($"https://localhost:7297/api/Students/UpdateStudent", content);
+
+            // Check if the response was successful
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                // Handle the error
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
         }
 
 
         // GET: Students/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            if (id == 0 )
+            // Make a DELETE request to the API with the ID in the URL
+            HttpResponseMessage response = await _httpClient.DeleteAsync($"https://localhost:7297/api/Students/DeleteStudent/{id}");
+
+            // Check if the response was successful
+            if (response.IsSuccessStatusCode)
             {
-                return NotFound();
+                // Read the response content as a string
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // Do something with the response data
+                // ...
+
+                //return Ok(responseBody);
+                return RedirectToAction(nameof(Index));
             }
-
-            await studentRepository.DeleteStudentAsync(id);
-
-            return RedirectToAction(nameof(Index));
+            else
+            {
+                // Handle the error
+                return StatusCode((int)response.StatusCode, response.ReasonPhrase);
+            }
         }
 
         public async Task<IActionResult> StudentClassList(int? id)

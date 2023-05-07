@@ -25,12 +25,16 @@ namespace Domain.Repositories
 
             return await studentClasses.AsNoTracking().ToListAsync();
         }
-        public async Task CreateStudentClassAsync(ClassStudent classStudent)
+        public async Task CreateStudentClassAsync(int studentId, int classId)
         {
+            //var studentId = HttpContext.Session.GetInt32(studentId);
+            ClassStudent classStudent = new ClassStudent();
+            classStudent.StudentID = studentId;
+            classStudent.ClassID = classId;
             await context.ClassStudents.AddAsync(classStudent);
             await context.SaveChangesAsync();
         }
-        public async Task DeleteStudentClassAsync(int classStudentId, int studentId) {
+        public async Task DeleteStudentClassAsync(int classStudentId) {
             var classStudentModel = await context.ClassStudents.FindAsync(classStudentId);
             if (classStudentModel != null)
             {

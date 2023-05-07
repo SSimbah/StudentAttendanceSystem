@@ -1,13 +1,12 @@
 ﻿using Domain.DataAccess;
+using Domain.Entities;
 using Domain.Repositories;
 using Domain.RepositoryInterfaces;
 using Microsoft.AspNetCore.Mvc;
-using Domain.Entities;
-using Domain.ViewModels;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ClassController : ControllerBase
     {
@@ -39,6 +38,7 @@ namespace WebApi.Controllers
                     "Error retrieving data from the database");
             }
         }
+
 
         //// GET: ClassModels/Details/5
         //public async Task<IActionResult> Details(int id)
@@ -139,14 +139,9 @@ namespace WebApi.Controllers
         //}
 
         // API - PUT Class / Update
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateClass(int id, ClassModel classModel)
+        [HttpPut]
+        public async Task<IActionResult> UpdateClass(ClassModel classModel)
         {
-            if (id != classModel.ClassID)
-            {
-                return BadRequest();
-            }
-
             await classRepository.CheckInputAsync(classModel);
             await classRepository.UpdateClassesAsync(classModel);
 
@@ -168,7 +163,7 @@ namespace WebApi.Controllers
 
         // API - DELETE Class / Delete
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ClassModel>> DeleteInstructor(int id)
+        public async Task<ActionResult<ClassModel>> DeleteClass(int id)
         {
             try
             {
@@ -176,7 +171,7 @@ namespace WebApi.Controllers
 
                 if (classModel == null)
                 {
-                    return NotFound($"Employee with Id = {id} not found");
+                    return NotFound($"Class with Id = {id} not found");
                 }
 
                 await classRepository.DeleteClassAsync(id);
@@ -188,6 +183,22 @@ namespace WebApi.Controllers
                     "Error deleting data");
             }
         }
+
+        [HttpGet]
+        public async Task<ActionResult> GetAllSubject()
+        {
+            try
+            {
+
+                return Ok(await classRepository.GetSubjects());
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+        }
+
 
         //// Class Student List
         //public async Task<IActionResult> StudentList(int? id)

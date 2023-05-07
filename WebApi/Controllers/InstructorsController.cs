@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class InstructorsController : ControllerBase
     {
@@ -128,14 +128,9 @@ namespace WebApi.Controllers
         //}
 
         // API - PUT Instructor / Update
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStudent(int id, Instructor instructor)
+        [HttpPut]
+        public async Task<IActionResult> UpdateInstructor(Instructor instructor)
         {
-            if (id != instructor.InstructorID)
-            {
-                return BadRequest();
-            }
-
             await instructorRepository.CheckInputAsync(instructor);
             await instructorRepository.UpdateInstructorAsync(instructor);
 
@@ -166,7 +161,7 @@ namespace WebApi.Controllers
 
                 if (instructor == null)
                 {
-                    return NotFound($"Employee with Id = {id} not found");
+                    return NotFound($"Instructor with Id = {id} not found");
                 }
 
                 await instructorRepository.DeleteInstructorAsync(id);
@@ -179,13 +174,21 @@ namespace WebApi.Controllers
             }
         }
 
-        //public async Task<IActionResult> InstructorClassList(int id)
-        //{
-        //    var instructor = await instructorRepository.GetInstructorByIdAsync(id);
-        //    ViewBag.InstructorName = instructor.FullName;
-        //    var instructorClasses = await instructorRepository.GetInstructorClassesAsync(id);
-        //    ViewBag.StudentID = id;
-        //    return View(instructorClasses);
-        //}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetClassList(int id)
+        {
+            //var instructorClasses = await instructorRepository.GetInstructorClassesAsync(id);
+            //ViewBag.StudentID = id;
+            //return View(instructorClasses);
+
+            var instructorClasses = await instructorRepository.GetInstructorClassesAsync(id);
+
+            if (id == 0 || instructorClasses == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(instructorClasses);
+        }
     }
 }

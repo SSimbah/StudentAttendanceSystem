@@ -12,7 +12,7 @@ namespace Domain.Entities
         public int ClassID { get; set; }
         public int StudentID { get; set; }
 
-        public ClassModel Class { get; set; }
-        public Student Student { get; set; }
+        public ClassModel? Class { get; set; }
+        public Student? Student { get; set; }
     }
 }
