@@ -70,7 +70,6 @@ namespace WebApi.Controllers
 
             return classModel;
         }
-
         //// GET: ClassModels/Create
         //public IActionResult Create()
         //{

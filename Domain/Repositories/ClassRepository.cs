@@ -51,6 +51,17 @@ namespace Domain.Repositories
             var subject = await context.Subjects.ToListAsync();
             return subject;
         }
+
+        public async Task<IEnumerable<ClassModel>> GetAvailableClassesAsync(int studentId)
+        {
+            var cs = await context.ClassStudents.Where(cs => cs.StudentID == studentId).ToListAsync();
+
+            var classModel = await context.ClassModels
+                .Include(i => i.Instructor)
+                .Include(s => s.Subject)
+                .ToListAsync();
+            return classModel;
+        }
         //public List<Instructor> GetInstructors()
         //{
         //    var intructors = context.Instructors.ToList();

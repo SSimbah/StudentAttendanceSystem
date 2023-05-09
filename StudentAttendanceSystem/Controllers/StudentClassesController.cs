@@ -138,7 +138,7 @@ namespace StudentAttendanceSystem.Controllers
             //return View(classes);
 
             ViewBag.StudentID = studentId;
-            HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7297/api/Class/GetAllClasses");
+            HttpResponseMessage response = await _httpClient.GetAsync($"https://localhost:7297/api/StudentClasses/GetAvailableClass/{studentId}");
             // Check if the response was successful
             if (response.IsSuccessStatusCode)
             {

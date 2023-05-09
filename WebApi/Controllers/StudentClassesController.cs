@@ -40,7 +40,22 @@ namespace WebApi.Controllers
             //return View(await studentClasses.AsNoTracking().ToListAsync());
             try
             {
+                //var x = studentClassRepository.GetStudentClassesAsync(id);
                 return Ok(await studentClassRepository.GetStudentClassesAsync(id));
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAvailableClass(int id)
+        {
+            try
+            {
+                return Ok(await studentClassRepository.GetAvailableClassesAsync(id));
             }
             catch (Exception)
             {
